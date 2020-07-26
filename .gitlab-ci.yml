@@ -47,7 +47,11 @@ deploy:
   - ssh ubuntu@193.196.37.138 "sudo rm -rf  ~/WebProjectOLD"
 
   ## Replace the definition of the target  site 
-  - ssh ubuntu@193.196.37.138 "sudo cp -f /home/ubuntu/moed/moedclone/default /etc/nginx/sites-enabled/default"
+  - line = Get-Content /etc/nginx/sites-enabled/default | Select-String root | Select-Object -ExpandProperty Line
+  - content = Get-Content /etc/nginx/sites-enabled/default
+  - content | ForEach-Object {$_ -replace $line,"root = ~/WebProjectOLD"} | Set-Content /etc/nginx/sites-enabled/default
+  ##- ssh ubuntu@193.196.37.138 "sudo cp -f /home/ubuntu/moed/moedclone/default /etc/nginx/sites-enabled/default"
+  ##- ssh ubuntu@193.196.37.138 "sudo cp -f /home/ubuntu/moed/moedclone/default /etc/nginx/sites-enabled/default"
 
   ## Restart Nginx
   ## - ssh ubuntu@193.196.37.138 "sudo systemctl restart nginx"
