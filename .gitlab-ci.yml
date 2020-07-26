@@ -7,10 +7,10 @@ deploy:
   stage: deploy
   script:
    ## Install rsync
-  - apk update && apk add rsync
+  - apt-get update && apk add rsync
 
   ## Add ssh client
-  - 'which ssh-agent || ( apk update && apk add openssh-client)'
+  - 'which ssh-agent || ( apt-get update && apt-get add openssh-client)'
   
   ##  Run ssh-agent (inside the build environment)
   - eval "$(ssh-agent -s)"
