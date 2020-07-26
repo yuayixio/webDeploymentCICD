@@ -1,0 +1,57 @@
+image: nginx:alpine
+
+stages:
+  - deploy
+
+deploy:
+  stage: deploy
+  script:
+   ## Install rsync
+  - apk update && apk add rsync
+
+  ## Add ssh client
+  - 'which ssh-agent || ( apk update && apk add openssh-client)'
+  
+  ##  Run ssh-agent (inside the build environment)
+  - eval "$(ssh-agent -s)"
+  
+  ## Add the SSH key variable to the agent store
+  - echo "$DEPLOY_KEY" | ssh-add -
+  
+  ## Create the SSH directory and give it the right permissions 
+  - mkdir -p ~/.ssh
+  - chmod 700 ~/.ssh
+  
+  ## Host key verification fix
+  - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+  
+  ## Check local files
+  - ls
+
+  ## Check remote access
+  - ssh ubuntu@193.196.37.138 "ls -l ~/WebProject"
+
+   # Create temp folder structure if not existing
+  - ssh ubuntu@193.196.37.138 "mkdir -p ~/WebProjectTEMP"
+
+  ##  Copy files; just use "www" folder (in which the .html file is stored)
+  - rsync -a --delete --stats ./www/ ubuntu@193.196.37.138:~/WebProjectTEMP
+
+  ## Check successful copy
+  - ssh ubuntu@193.196.37.138 "ls -l ~/WebProjectTEMP"
+
+  ## Move existing directory in Outdated folder and new one in the main one
+  - ssh ubuntu@193.196.37.138 "mv ~/WebProject ~/WebProjectOLD && mv ~/WebProjectTEMP ~/WebProject" 
+
+  ## Remove old directory
+  - ssh ubuntu@193.196.37.138 "sudo rm -rf  ~/WebProjectOLD"
+
+  ## Replace the definition of the target  site 
+  - ssh ubuntu@193.196.37.138 "sudo cp -f /home/ubuntu/moed/moedclone/default /etc/nginx/sites-enabled/default"
+
+  ## Restart Nginx
+  ## - ssh ubuntu@193.196.37.138 "sudo systemctl restart nginx"
+
+  ## Check if restart was successful
+  ##- ssh ubuntu@193.196.37.138 "sudo systemctl status nginx"
+
