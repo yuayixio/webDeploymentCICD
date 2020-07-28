@@ -1,5 +1,7 @@
 This is a guide to automate the deployment of a web service with GitLab CI
 
+[[_TOC_]]
+
 # Deployment on Remote Nginx Web-Server 
 
 ### Prerequisitions 
@@ -20,30 +22,30 @@ Although, there seemingly is a lot to do before initialising GitLab CI, most of 
 
 First of all, you need to create the gitlab-ci.yml script. For that, you need to add a new file in your GitLab root directory and select "gitlab-ci.yml" as template. As you (probably) now, the YAML file is ordered in stages and jobs, which run on those stages. For our very simple project, which doesn't need to be built anymore, we only define one stage. Also, we will use a Docker Container to run our CI file in. For that, we use a nginx docker image.
 
-'''
+```
 image: nginx:alpine
 
 stages: 
     - deploy
-'''
+```
 
 We will just name the job running on that stage "deploy" too. Therefore, we need to declare on which stage it is running on as well as defining it's tasks below. The Runner then will go through the script from top to bottom and execute all steps sequentally, such as you'd use the terminal to manually insert your commands
 
-'''
+```
 deploy: 
     stage: deploy
     script: 
-'''
+```
 
 First, we need to do install **rsync**, which is a service later used to copy the files to the target server and **ssh agent**, our ssh connection service
 
-'''
+```
  ## Install rsync
   - apk update && apk add rsync
 
   ## Add ssh client
   - 'which ssh-agent || ( apk update && apk add openssh-client)'
-'''
+```
 
 Side note: we use an alpine distribution, which is the reason we use "apk" as our install manager. If you're using e.g. an ubuntu image, you need to replace "apk" with "apt-get".
 
