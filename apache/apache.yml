@@ -1,0 +1,57 @@
+image: httpd:alpine
+
+stages:
+  - deploy
+
+deploy:
+  stage: deploy
+  script:
+   ## Install rsync
+  - apk update && apk add rsync
+
+  ## Add ssh client
+  - 'which ssh-agent || ( apk update && apk add openssh-client)'
+  
+  ##  Run ssh-agent (inside the build environment)
+  - eval "$(ssh-agent -s)"
+  
+  ## Add the SSH password
+  - echo "$DEPLOY_KEY" | ssh-add -
+  - apk add sshpass
+  #- sshpass -p "$DEPLOY_PW" ssh -o StrictHostKeyChecking=no root@aifb-bis-petrianalyzer.aifb.kit.edu
+ 
+ ## Create the SSH directory and give it the right permissions 
+  - mkdir -p ~/.ssh
+  - chmod 700 ~/.ssh
+  
+  ## Host key verification fix
+  - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+  
+  ## Check local files
+  - ls
+  #- ssh -vvv root@aifb-bis-petrianalyzer.aifb.kit.edu
+  ## Check remote access
+  - ssh -tt root@129.13.152.42 "ls -l ~/moed"
+
+   # Create temp folder structure if not existing
+  - ssh root@aifb-bis-petrianalyzer.aifb.kit.edu "mkdir -p ~/moedcloneTemp"
+
+  ##  Copy files; just use "www" folder (in which the .html file is stored)
+  - rsync -a --delete --stats ./www/ root@aifb-bis-petrianalyzer.aifb.kit.edu:~/moedcloneTemp
+
+  ## Check successful copy
+  - ssh root@aifb-bis-petrianalyzer.aifb.kit.edu "ls -l ~/moedcloneTemp"
+
+  ## Move existing directory in Outdated folder and new one in the main one
+  - ssh root@aifb-bis-petrianalyzer.aifb.kit.edu "mv ~/moedclone ~/moedcloneOld && mv ~/moedcloneTemp ~/moedclone" 
+
+  ## Remove old directory
+  - ssh root@aifb-bis-petrianalyzer.aifb.kit.edu "sudo rm -rf ~/moedcloneOld"
+
+  ## Replace the definition of the target  site 
+  - ssh root@aifb-bis-petrianalyzer.aifb.kit.edu "cd /etc/httpd/conf/"
+  - ssh root@aifb-bis-petrianalyzer.aifb.kit.edu "sed -i 's/DocumentRoot "/var/www/html"/DocumentRoot "~/moed/www"/g' httpd.conf"
+  ## Optional, if .html file is not named "index" 
+  - ssh root@aifb-bis-petrianalyzer.aifb.kit.edu "sed -i 's/DirectoryIndex index.html/DirectoryIndex INDEXNAME.html/g' httpd.conf"
+  #- ssh root@aifb-bis-petrianalyzer.aifb.kit.edu "sudo cp -f /home/root/moed/moedclone/default /etc/nginx/sites-enabled/default"
+

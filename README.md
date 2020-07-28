@@ -104,22 +104,41 @@ Next, the root location of the web server needs to be adjusted. If this was done
 
 ```yaml
     ## Replace the definition of the target  site 
-  - line = Get-Content /etc/nginx/sites-enabled/default | select-string root | select-object -ExpandProperty Line
-  - content = Get-Content /etc/nginx/sites-enabled/default
-  - content | ForEach-Object {$_ -replace $line,"root = ~/WebProjectOLD"} | Set-Content /etc/nginx/sites-enabled/default
+  - ssh user@IP "line = Get-Content /etc/nginx/sites-enabled/default | select-string root | select-object -ExpandProperty Line"
+  - ssh user@IP "content = Get-Content /etc/nginx/sites-enabled/default"
+  - ssh user@IP "content | ForEach-Object {$_ -replace $line,"root = ~/WebProjectOLD"} | Set-Content /etc/nginx/sites-enabled/default"
 ```
 
 Here is, where using different web servers changes the yaml file. If you're using a differet web-server you might want to adjust this step accordingly. Finally, you can access/refresh the page via your browser of choice and can spectate your automatically deployed changes.
 
+The full file can be found in this project in the root directory.
+
 # For Apache Web Server 
 
-You just need to conduct minor changes for an Apache Web Server in comparison to the Nginx one. The major difference here is the location of the default file. Therefore, you need to substitute the following line
+You just need to conduct minor changes for an Apache Web Server in comparison to the Nginx one. The major difference here is the location of the default file. Therefore, you need to substitute the following lines
 
-LINE
+```yaml
+    ## Replace the definition of the target  site 
+  - ssh user@IP "line = Get-Content /etc/nginx/sites-enabled/default | select-string root | select-object -ExpandProperty Line"
+  - ssh user@IP "content = Get-Content /etc/nginx/sites-enabled/default"
+  - ssh user@IP "content | ForEach-Object {$_ -replace $line,"root = ~/WebProjectOLD"} | Set-Content /etc/nginx/sites-enabled/default"
+```
 
 with this piece of code
 
-LINE
+```yaml
+    ## Replace the definition of the target  site 
+  - ssh user@IP "cd /etc/httpd/conf/"
+  - ssh user@IP "sed -i 's/DocumentRoot "/var/www/html"/DocumentRoot "~/moed/www"/g' httpd.conf"
+  ## Optional, if .html file is not named "index" 
+  - ssh user@IP "sed -i 's/DirectoryIndex index.html/DirectoryIndex INDEXNAME.html/g' httpd.conf"
+```
+
+Additionally, the image chosen in the first line of the YAML script should be changed to an apache image.
+
+```yaml
+image: httpd:alpine
+```
 
 Your finished Script is stored in the "apache" folder. 
 
