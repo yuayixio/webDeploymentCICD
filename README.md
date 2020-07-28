@@ -1,5 +1,12 @@
-This is a guide to automate the deployment of a web service with GitLab CI
+# Guide on integrating GitLab CI into the development of Web Projects 
 
+This is a guide to automate the deployment of a web service with the usage of GitLab Continuous Integration/Continuous Deployment. Detailed information on GitLab CI/CD can be reread [here](https://docs.gitlab.com/ee/ci/). 
+
+Basically, GitLab provides developers with built in tools to automate the build, delivery and deployment of software. We are going to make use of that by automatically deploying web applications, whenever a new push on the repository is done. By that, we are able to immediatly see/test the new changes and always have access to the up-to-date version, without needing to update it manually by hand. To do so, we implement a script into our framework which is automatically executed on code updates. 
+
+This project provides a very simple web-application involving an index.html file as well as a JS and a CSS file for functionality and style. On basis of this project, a gitlab-ci.yml file is created in order to enable the automated deployment of the web-applciation. This Readme describes the pre-requirements needed and a step-by-step guide of how to integrate a similar process into your project. 
+
+Overview
 [[_TOC_]]
 
 # Deployment on Remote Nginx Web-Server 
