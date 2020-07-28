@@ -63,10 +63,10 @@ LINE
 
 Your finished Script is stored in the "apache" folder. 
 
-### Possible Sources of Errors 
+# Possible Sources of Errors 
 
-##### Invalid YAML file
-- Space sensitive!! Try to avoid unnecessary tabs/white spaces
+- Invalid YAML file
+    - Space sensitive!! Try to avoid unnecessary tabs/white spaces
 
 
 - Ports/Firewall not open
