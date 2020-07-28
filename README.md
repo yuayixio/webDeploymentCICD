@@ -13,19 +13,19 @@ Overview
 
 ### Prerequisitions 
 
-Although, there seemingly is a lot to do before initialising GitLab CI, most of the steps only need to be done once and can be used for all other projects afterwards. Also, the reward from bringing some automation into your coding life definetly pays the bills on that part ;)
+Although, seemingly there is a lot to do before initialising GitLab CI, most of the steps only need to be done once and can be re-used for all other projects afterwards. Also, the reward from bringing some automation into your coding life definitely pays the bills on that part :v:
 
-- *Enable GitLab CI* in your Project (if not already) ([How-To](hhttps://docs.gitlab.com/ee/ci/enable_or_disable_ci.html#per-project-user-setting))
-- Up and Running *Remote Server* (Here: CentOS, but possible with any other as e.g. ubuntu as well)
-- Up and Running *Web Server* on the Remotote Server (Here: Nginx, but deployment with Apache is described in the bottom of the Readme) 
-- *SSH Connection* to Remote Server ([How-To](https://phoenixnap.com/kb/ssh-to-connect-to-remote-server-linux-or-windows))
-    - with *open ports* ([How-To](https://www.papercut.com/support/resources/manuals/ng-mf/common/topics/customize-enable-additional-ports.html))
-- Create new *SSH Keypair WITHOUT a passphrase* ([How-To](https://www.ssh.com/ssh/keygen/))
-    - *Deploy private SSH key* as variable in *project* ([How-To](https://docs.gitlab.com/ee/ci/variables/#create-a-custom-variable-in-the-ui))
-    - Also have your *public key* deployed on the *remote server* ([How-To](https://kb.iu.edu/d/aews))
-- Add *Target Folder* (In the following nemed "WebServer") on Deployment Server, so that the script can actually access the right location and copy the files into it
-- SITUATIONAL: If you don't want/can't use a shared runner, you need to *define an own gitlab runner* yourself ([How-To](https://docs.gitlab.com/runner/register/index.html))
-- OPTIONAL: *sudo rights* of the user you're gonna access the remote server with, or enable that in GitLab CI directly ([How-To](https://stackoverflow.com/questions/19383887/how-to-use-sudo-in-build-script-for-gitlab-ci/37800985))
+- **Enable GitLab CI** in your Project (if not already) ([How-To](hhttps://docs.gitlab.com/ee/ci/enable_or_disable_ci.html#per-project-user-setting))
+- Up and Running **Remote Server** (Here: CentOS, but possible with any other as e.g. ubuntu as well)
+- Up and Running **Web Server** on the Remotote Server (Here: Nginx, but deployment with Apache is described in the bottom of the Readme) 
+- **SSH Connection** to Remote Server ([How-To](https://phoenixnap.com/kb/ssh-to-connect-to-remote-server-linux-or-windows))
+    - with **open ports** ([How-To](https://www.papercut.com/support/resources/manuals/ng-mf/common/topics/customize-enable-additional-ports.html))
+- Create new **SSH Keypair WITHOUT a passphrase** ([How-To](https://www.ssh.com/ssh/keygen/))
+    - *Deploy private SSH key* as variable in **project** ([How-To](https://docs.gitlab.com/ee/ci/variables/#create-a-custom-variable-in-the-ui))
+    - Also have your *public key* deployed on the **remote server** ([How-To](https://kb.iu.edu/d/aews))
+- Add **Target Folder** (In the following nemed "WebServer") on Deployment Server, so that the script can actually access the right location and copy the files into it
+- SITUATIONAL: If you don't want/can't use a shared runner, you need to **define an own gitlab runner** yourself ([How-To](https://docs.gitlab.com/runner/register/index.html))
+- OPTIONAL: **sudo rights** of the user you're gonna access the remote server with, or enable that in GitLab CI directly ([How-To](https://stackoverflow.com/questions/19383887/how-to-use-sudo-in-build-script-for-gitlab-ci/37800985))
 
 ### Script 
 
@@ -100,10 +100,10 @@ Next, we need to develop the SSH conenction to the remote server. for that, we w
  ```
 Again, this can be pretty much copy-pasted too. Just some variables need to be adjusted to your own settings.
 
-    - *user* -> Your access name for the remote server (optionally with sudo rights)
-    - *IP* -> Your server's IP adress or domain name
-    - *WebProject(OLD/TEMP)* -> Your project name/preferred folder structure
-    - *./www/* in the rsync command -> Dependent on the folder/file structure of your project. Removing this parameter will make the command copy your whole repository over. Adjust it according to your needs.  
+    - **user** -> Your access name for the remote server (optionally with sudo rights)
+    - **IP** -> Your server's IP adress or domain name
+    - **WebProject(OLD/TEMP)** -> Your project name/preferred folder structure
+    - **./www/** in the rsync command -> Dependent on the folder/file structure of your project. Removing this parameter will make the command copy your whole repository over. Adjust it according to your needs.  
 
 This obviously applies for the before mentioned SSH conenction as well.
 
