@@ -100,10 +100,10 @@ Next, we need to develop the SSH conenction to the remote server. for that, we w
  ```
 Again, this can be pretty much copy-pasted too. Just some variables need to be adjusted to your own settings.
 
-    - **user** -> Your access name for the remote server (optionally with sudo rights)
-    - **IP** -> Your server's IP adress or domain name
-    - **WebProject(OLD/TEMP)** -> Your project name/preferred folder structure
-    - **./www/** in the rsync command -> Dependent on the folder/file structure of your project. Removing this parameter will make the command copy your whole repository over. Adjust it according to your needs.  
+- **user** -> Your access name for the remote server (optionally with sudo rights)
+- **IP** -> Your server's IP adress or domain name
+- **WebProject(OLD/TEMP)** -> Your project name/preferred folder structure
+- **./www/** in the rsync command -> Dependent on the folder/file structure of your project. Removing this parameter will make the command copy your whole repository over. Adjust it according to your needs.  
 
 This obviously applies for the before mentioned SSH conenction as well.
 
