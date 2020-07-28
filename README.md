@@ -8,15 +8,17 @@ This is a guide to automate the deployment of a web service with GitLab CI
 
 Although, there seemingly is a lot to do before initialising GitLab CI, most of the steps only need to be done once and can be used for all other projects afterwards. Also, the reward from bringing some automation into your coding life definetly pays the bills on that part ;)
 
-- Enable GitLab CI in your Project (if not already) (LINK)
+- Enable GitLab CI in your Project (if not already) [LINK](hhttps://docs.gitlab.com/ee/ci/enable_or_disable_ci.html#per-project-user-setting)
 - Up and Running Remote Server (Here: CentOS, but possible with any other as e.g. ubuntu as well)
 - Up and Running Web Server on the Remotote Server (Here: Nginx, but deployment with Apache is described in the bottom of the Readme) 
-- SSH Connection to Remote Server (LINK)
-    - with open ports
-- Deploy private SSH key as variable in project (LINK)
-    - Also have your public key deployed on the web server (LINK)
+- SSH Connection to Remote Server [LINK](https://phoenixnap.com/kb/ssh-to-connect-to-remote-server-linux-or-windows)
+    - with open ports [LINK](https://www.papercut.com/support/resources/manuals/ng-mf/common/topics/customize-enable-additional-ports.html)
+- Create new SSH Keypair *WITHOUT a passphrase* [LINK](https://www.ssh.com/ssh/keygen/)
+    - Deploy private SSH key as variable in project [LINK](https://docs.gitlab.com/ee/ci/variables/#create-a-custom-variable-in-the-ui)
+    - Also have your public key deployed on the web server [LINK](https://kb.iu.edu/d/aews)
 - Add Target Folder (In the following nemed "WebServer") on Deployment Server, so that the script can actually access the right location
-- If you don't want/can't use a shared runner, you need to define an own gitlab runner yourself (LINK)
+- If you don't want/can't use a shared runner, you need to define an own gitlab runner yourself [LINK](https://docs.gitlab.com/runner/register/index.html)
+- OPTIONAL: sudo rights of the user you're gonna access the remote server with, or enable that in GitLab CI directly [LINK](https://stackoverflow.com/questions/19383887/how-to-use-sudo-in-build-script-for-gitlab-ci/37800985)
 
 ### Script 
 
@@ -31,7 +33,7 @@ stages:
 
 We will just name the job running on that stage "deploy" too. Therefore, we need to declare on which stage it is running on as well as defining it's tasks below. The Runner then will go through the script from top to bottom and execute all steps sequentally, such as you'd use the terminal to manually insert your commands
 
-```
+```yaml
 deploy: 
     stage: deploy
     script: 
@@ -39,7 +41,7 @@ deploy:
 
 First, we need to do install **rsync**, which is a service later used to copy the files to the target server and **ssh agent**, our ssh connection service
 
-```
+```yaml
  ## Install rsync
   - apk update && apk add rsync
 
@@ -49,7 +51,65 @@ First, we need to do install **rsync**, which is a service later used to copy th
 
 Side note: we use an alpine distribution, which is the reason we use "apk" as our install manager. If you're using e.g. an ubuntu image, you need to replace "apk" with "apt-get".
 
-Next, we need to develop the SSH conenction to the remote server. for that, we will make use of our previously depl
+Next, we need to develop the SSH conenction to the remote server. for that, we will make use of our previously deployed SSH key. 
+
+```yaml
+  ##  Run ssh-agent (inside the build environment)
+  - eval "$(ssh-agent -s)"
+  
+  ## Add the SSH key variable to the agent store
+  - echo "$DEPLOY_KEY" | ssh-add -
+  
+  ## Create the SSH directory and give it the right permissions 
+  - mkdir -p ~/.ssh
+  - chmod 700 ~/.ssh
+  
+  ## Host key verification fix
+  - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+  
+  ## Check local files
+  - ls
+
+  ## Check remote access
+  - ssh user@IP "ls -l ~/WebProject"
+```
+ This can be pretty much copied for every remote server connection. The ssh-agent is first activated and the deployed key accessed over the pre-defined syntax "$KEYVARIABLENAME". Ultimately, the ssh connection is checked by accessing our pre-defined folder. Now, the actual data transfer happens. We are going to transfer the files from the GitLab repository to the remote server. To do so, we will make use of an temporary folder, which then is swapped with the old files. By first importing the file and then swapping folders locally, we reduce latency and prevent down-times.
+
+ ```yaml
+    # Create temp folder structure if not existing
+  - ssh user@IP "mkdir -p ~/WebProjectTEMP"
+
+  ##  Copy files; just use "www" folder (in which the .html file is stored)
+  - rsync -a --delete --stats ./www/ user@IP:~/WebProjectTEMP
+
+  ## Check successful copy
+  - ssh user@IP "ls -l ~/WebProjectTEMP"
+
+  ## Move existing directory in Outdated folder and new one in the main one
+  - ssh user@IP "mv ~/WebProject ~/WebProjectOLD && mv ~/WebProjectTEMP ~/WebProject" 
+
+  ## Remove old directory
+  - ssh user@IP "sudo rm -rf  ~/WebProjectOLD"
+ ```
+Again, this can be pretty much copy-pasted too. Just some variables need to be adjusted to your own settings.
+
+    - *user* -> Your access name for the remote server (optionally with sudo rights)
+    - *IP* -> Your server's IP adress or domain name
+    - *WebProject(OLD/TEMP)* -> Your project name/preferred folder structure
+    - *./www/* in the rsync command -> Dependent on the folder/file structure of your project. Removing this parameter will make the command copy your whole repository over. Adjust it according to your needs.  
+
+This obviously applies for the before mentioned SSH conenction as well.
+
+Next, the root location of the web server needs to be adjusted. If this was done before, the command will be skipped. Hereby, we ensure that the correct folder is adressed by the nginx server, either because it is the first initiation or because other projects were using the server in between. 
+
+```yaml
+    ## Replace the definition of the target  site 
+  - line = Get-Content /etc/nginx/sites-enabled/default | select-string root | select-object -ExpandProperty Line
+  - content = Get-Content /etc/nginx/sites-enabled/default
+  - content | ForEach-Object {$_ -replace $line,"root = ~/WebProjectOLD"} | Set-Content /etc/nginx/sites-enabled/default
+```
+
+Here is, where using different web servers changes the yaml file. If you're using a differet web-server you might want to adjust this step accordingly. Finally, you can access/refresh the page via your browser of choice and can spectate your automatically deployed changes.
 
 # For Apache Web Server 
 
