@@ -15,17 +15,17 @@ Overview
 
 Although, there seemingly is a lot to do before initialising GitLab CI, most of the steps only need to be done once and can be used for all other projects afterwards. Also, the reward from bringing some automation into your coding life definetly pays the bills on that part ;)
 
-- Enable GitLab CI in your Project (if not already) [LINK](hhttps://docs.gitlab.com/ee/ci/enable_or_disable_ci.html#per-project-user-setting)
-- Up and Running Remote Server (Here: CentOS, but possible with any other as e.g. ubuntu as well)
-- Up and Running Web Server on the Remotote Server (Here: Nginx, but deployment with Apache is described in the bottom of the Readme) 
-- SSH Connection to Remote Server [LINK](https://phoenixnap.com/kb/ssh-to-connect-to-remote-server-linux-or-windows)
-    - with open ports [LINK](https://www.papercut.com/support/resources/manuals/ng-mf/common/topics/customize-enable-additional-ports.html)
-- Create new SSH Keypair *WITHOUT a passphrase* [LINK](https://www.ssh.com/ssh/keygen/)
-    - Deploy private SSH key as variable in project [LINK](https://docs.gitlab.com/ee/ci/variables/#create-a-custom-variable-in-the-ui)
-    - Also have your public key deployed on the web server [LINK](https://kb.iu.edu/d/aews)
-- Add Target Folder (In the following nemed "WebServer") on Deployment Server, so that the script can actually access the right location
-- If you don't want/can't use a shared runner, you need to define an own gitlab runner yourself [LINK](https://docs.gitlab.com/runner/register/index.html)
-- OPTIONAL: sudo rights of the user you're gonna access the remote server with, or enable that in GitLab CI directly [LINK](https://stackoverflow.com/questions/19383887/how-to-use-sudo-in-build-script-for-gitlab-ci/37800985)
+- *Enable GitLab CI* in your Project (if not already) ([How-To](hhttps://docs.gitlab.com/ee/ci/enable_or_disable_ci.html#per-project-user-setting))
+- Up and Running *Remote Server* (Here: CentOS, but possible with any other as e.g. ubuntu as well)
+- Up and Running *Web Server* on the Remotote Server (Here: Nginx, but deployment with Apache is described in the bottom of the Readme) 
+- *SSH Connection* to Remote Server ([How-To](https://phoenixnap.com/kb/ssh-to-connect-to-remote-server-linux-or-windows))
+    - with *open ports* ([How-To](https://www.papercut.com/support/resources/manuals/ng-mf/common/topics/customize-enable-additional-ports.html))
+- Create new *SSH Keypair WITHOUT a passphrase* ([How-To](https://www.ssh.com/ssh/keygen/))
+    - *Deploy private SSH key* as variable in *project* ([How-To](https://docs.gitlab.com/ee/ci/variables/#create-a-custom-variable-in-the-ui))
+    - Also have your *public key* deployed on the *remote server* ([How-To](https://kb.iu.edu/d/aews))
+- Add *Target Folder* (In the following nemed "WebServer") on Deployment Server, so that the script can actually access the right location and copy the files into it
+- SITUATIONAL: If you don't want/can't use a shared runner, you need to *define an own gitlab runner* yourself ([How-To](https://docs.gitlab.com/runner/register/index.html))
+- OPTIONAL: *sudo rights* of the user you're gonna access the remote server with, or enable that in GitLab CI directly ([How-To](https://stackoverflow.com/questions/19383887/how-to-use-sudo-in-build-script-for-gitlab-ci/37800985))
 
 ### Script 
 
@@ -152,11 +152,10 @@ Your finished Script is stored in the "apache" folder.
 # Possible Sources of Errors 
 
 - Invalid YAML file
-    - Space sensitive!! Try to avoid unnecessary tabs/white spaces
-
-
+    -> Space sensitive!! Try to avoid unnecessary tabs/white spaces
 - Ports/Firewall not open
--
+- Sudo rights of the user
+- Not alpine distribution (apk not working)
 
 
 
