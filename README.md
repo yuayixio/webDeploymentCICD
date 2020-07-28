@@ -22,7 +22,7 @@ Although, there seemingly is a lot to do before initialising GitLab CI, most of 
 
 First of all, you need to create the gitlab-ci.yml script. For that, you need to add a new file in your GitLab root directory and select "gitlab-ci.yml" as template. As you (probably) now, the YAML file is ordered in stages and jobs, which run on those stages. For our very simple project, which doesn't need to be built anymore, we only define one stage. Also, we will use a Docker Container to run our CI file in. For that, we use a nginx docker image.
 
-```
+```yaml
 image: nginx:alpine
 
 stages: 
