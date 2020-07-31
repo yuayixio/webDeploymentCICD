@@ -6,7 +6,7 @@ stages:
 deploy:
   stage: deploy
   script:
-   ## Install rsync
+   ##  Install rsync
   - apt-get update && apk add rsync
 
   ## Add ssh client
