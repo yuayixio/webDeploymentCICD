@@ -28,7 +28,7 @@ deploy:
   ## Check local files
   - ls
 
-  ## Check remote access
+  ##  Check remote access
   - ssh ubuntu@193.196.37.138 "ls -l ~/WebProject"
 
    # Create temp folder structure if not existing
