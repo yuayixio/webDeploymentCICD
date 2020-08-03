@@ -1,4 +1,4 @@
-image: nginx:alpine
+image: ubuntu:18.04
 
 stages:
   - deploy
@@ -8,10 +8,10 @@ deploy:
   script:
    ##  Install rsync
 #  - apt-get update && apk add-get -y install sudo
-  - apk add rsync
+   - apt-get update &&  apt-get install rsync
 
   ## Add ssh client
-  - 'which ssh-agent || ( apk add openssh-client)'
+  - 'which ssh-agent || ( apt-get install openssh-client)'
   
   ##  Run ssh-agent (inside the build environment)
   - eval "$(ssh-agent -s)"
