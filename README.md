@@ -1,13 +1,13 @@
 # Guide on integrating GitLab CI into the development of Web Projects 
 
+[[_TOC_]]
+
 This is a guide to automate the deployment of a web service with the usage of GitLab Continuous Integration/Continuous Deployment. Detailed information on GitLab CI/CD can be reread [here](https://docs.gitlab.com/ee/ci/). 
 
 Basically, GitLab provides developers with built in tools to automate the build, delivery and deployment of software. We are going to make use of that by automatically deploying web applications, whenever a new push on the repository is done. By that, we are able to immediatly see/test the new changes and always have access to the up-to-date version, without needing to update it manually by hand. To do so, we implement a script into our framework which is automatically executed on code updates. 
 
 This project provides a very simple web-application involving an index.html file as well as a JS and a CSS file for functionality and style. On basis of this project, a gitlab-ci.yml file is created in order to enable the automated deployment of the web-applciation. This Readme describes the pre-requirements needed and a step-by-step guide of how to integrate a similar process into your project. 
 
-Overview
-[[_TOC_]]
 
 # Deployment on Remote Nginx Web-Server 
 
@@ -32,7 +32,7 @@ Although, seemingly there is a lot to do before initialising GitLab CI, most of 
 First of all, you need to create the gitlab-ci.yml script. For that, you need to add a new file in your GitLab root directory and select "gitlab-ci.yml" as template. As you (probably) now, the YAML file is ordered in stages and jobs, which run on those stages. For our very simple project, which doesn't need to be built anymore, we only define one stage. Also, we will use a Docker Container to run our CI file in. For that, we use a nginx docker image.
 
 ```yaml
-image: nginx:alpine
+image: ubuntu:18.04
 
 stages: 
     - deploy
@@ -141,13 +141,7 @@ with this piece of code
   - ssh user@IP "sed -i 's/DirectoryIndex index.html/DirectoryIndex INDEXNAME.html/g' httpd.conf"
 ```
 
-Additionally, the image chosen in the first line of the YAML script should be changed to an apache image.
-
-```yaml
-image: httpd:alpine
-```
-
-Your finished Script is stored in the "apache" folder. 
+An example Script is stored in the "apache" folder. 
 
 # Possible Sources of Errors 
 
