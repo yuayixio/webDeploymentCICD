@@ -7,10 +7,10 @@ deploy:
   stage: deploy
   script:
    ##  Install rsync
-  - apt-get update && apt-get rsync
+  - apt-get update && sudo apt-get rsync
 
   ## Add ssh client
-  - 'which ssh-agent || ( apt-get update && apt-get openssh-client)'
+  - 'which ssh-agent || ( apt-get update && sudo apt-get openssh-client)'
   
   ##  Run ssh-agent (inside the build environment)
   - eval "$(ssh-agent -s)"
