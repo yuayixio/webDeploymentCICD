@@ -8,10 +8,10 @@ deploy:
   script:
    ##  Install rsync
 #  - apt-get update && apk add-get -y install sudo
-  - apt-get update &&  apt-get install rsync
+  - apt-get update &&  apt-get -y install rsync
 
   ## Add ssh client
-  - 'which ssh-agent || ( apt-get install openssh-client)'
+  - 'which ssh-agent || ( apt-get -y install openssh-client)'
   
   ##  Run ssh-agent (inside the build environment)
   - eval "$(ssh-agent -s)"
