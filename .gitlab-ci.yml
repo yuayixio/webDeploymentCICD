@@ -8,7 +8,7 @@ deploy:
   script:
    ##  Install rsync
 #  - apt-get update && apk add-get -y install sudo
-   - apt-get update &&  apt-get install rsync
+  - apt-get update &&  apt-get install rsync
 
   ## Add ssh client
   - 'which ssh-agent || ( apt-get install openssh-client)'
