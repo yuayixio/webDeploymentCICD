@@ -152,4 +152,11 @@ An example Script is stored in the "apache" folder.
 - Not alpine distribution (apk not working)
 
 
+# Runner for Research Group
+
+The GitLab Runner is the tool used to run your jobs and send the results back to GitLab. It basically the executing part of GitLab CI, responsible with following the task defined in the *gitlab-ci.yml* file. The detailed instructions of registering a runner can be found [How-To](https://docs.gitlab.com/runner/register/index.html) here.
+
+However, in order to have a shared runner for the research group, 
+
+
 
