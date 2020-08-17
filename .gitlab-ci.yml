@@ -25,7 +25,7 @@ deploy:
   ## Host key verification fix
   - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
   
-  ## Check local files
+  ##  Check local files
   - ls
 
   ##  Check remote access
