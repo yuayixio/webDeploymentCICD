@@ -20,7 +20,7 @@ deploy:
   
   ## In case of necessary password (uncompleted)
   #- apk add sshpass
-  #- sshpass -p "$DEPLOY_PW" ssh -o StrictHostKeyChecking=no root@aifb-bis-petrianalyzer.aifb.kit.edu
+  #- sshpass -p "$DEPLOY_PW" ssh -o StrictHostKeyChecking=no USER@HOSTNAMEORADRESS
  
  ## Create the SSH directory and give it the right permissions 
   - mkdir -p ~/.ssh
@@ -33,26 +33,26 @@ deploy:
   - ls
 
   ## Check remote access
-  - ssh -tt root@129.13.152.42 "ls -l ~/moed"
+  - ssh -tt USER@HOSTNAMEORADRESS "ls -l ~/moed"
 
    # Create temp folder structure if not existing
-  - ssh root@aifb-bis-petrianalyzer.aifb.kit.edu "mkdir -p ~/moedcloneTemp"
+  - ssh USER@HOSTNAMEORADRESS "mkdir -p ~/moedcloneTemp"
 
   ##  Copy files; just use "www" folder (in which the .html file is stored)
-  - rsync -a --delete --stats ./www/ root@aifb-bis-petrianalyzer.aifb.kit.edu:~/moedcloneTemp
+  - rsync -a --delete --stats ./www/ USER@HOSTNAMEORADRESS:~/moedcloneTemp
 
   ## Check successful copy
-  - ssh root@aifb-bis-petrianalyzer.aifb.kit.edu "ls -l ~/moedcloneTemp"
+  - ssh USER@HOSTNAMEORADRESS "ls -l ~/moedcloneTemp"
 
   ## Move existing directory in Outdated folder and new one in the main one
-  - ssh root@aifb-bis-petrianalyzer.aifb.kit.edu "mv ~/moedclone ~/moedcloneOld && mv ~/moedcloneTemp ~/moedclone" 
+  - ssh USER@HOSTNAMEORADRESS "mv ~/moedclone ~/moedcloneOld && mv ~/moedcloneTemp ~/moedclone" 
 
   ## Remove old directory
-  - ssh root@aifb-bis-petrianalyzer.aifb.kit.edu "sudo rm -rf ~/moedcloneOld"
+  - ssh USER@HOSTNAMEORADRESS "sudo rm -rf ~/moedcloneOld"
 
   ## Replace the definition of the target  site 
-  - ssh root@aifb-bis-petrianalyzer.aifb.kit.edu "cd /etc/httpd/conf/"
-  - ssh root@aifb-bis-petrianalyzer.aifb.kit.edu "sed -i 's/DocumentRoot "/var/www/html"/DocumentRoot "~/moed/www"/g' httpd.conf"
+  - ssh USER@HOSTNAMEORADRESS "cd /etc/httpd/conf/"
+  - ssh USER@HOSTNAMEORADRESS "sed -i 's/DocumentRoot "/var/www/html"/DocumentRoot "~/moed/www"/g' httpd.conf"
 
   ## Optional, if .html file is not named "index" (Replace "INDEXNAME" with according name) 
-  #- ssh root@aifb-bis-petrianalyzer.aifb.kit.edu "sed -i 's/DirectoryIndex index.html/DirectoryIndex INDEXNAME.html/g' httpd.conf"
+  #- ssh USER@HOSTNAMEORADRESS "sed -i 's/DirectoryIndex index.html/DirectoryIndex INDEXNAME.html/g' httpd.conf"
