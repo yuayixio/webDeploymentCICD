@@ -101,19 +101,17 @@ Next, we need to develop the SSH conenction to the remote server. for that, we w
 Again, this can be pretty much copy-pasted too. Just some variables need to be adjusted to your own settings.
 
 - **user** -> Your access name for the remote server (optionally with sudo rights)
-- **IP** -> Your server's IP adress or domain name
+- **IP** -> Your server's IP adress **or** domain name
 - **WebProject(OLD/TEMP)** -> Your project name/preferred folder structure
 - **./www/** in the rsync command -> Dependent on the folder/file structure of your project. Removing this parameter will make the command copy your whole repository over. Adjust it according to your needs.  
 
 This obviously applies for the before mentioned SSH conenction as well.
 
-Next, the root location of the web server needs to be adjusted. If this was done before, the command will be skipped. Hereby, we ensure that the correct folder is adressed by the nginx server, either because it is the first initiation or because other projects were using the server in between. 
+Next, the root location of the web server needs to be adjusted. If this was done before, the command will be skipped. Hereby, we ensure that the correct folder is adressed by the nginx server, either because it is the first initiation or because other projects were using the server in between. This is accomplished by using a simple regular expression supported substitution.
 
 ```yaml
     ## Replace the definition of the target  site 
-  - ssh user@IP "line = Get-Content /etc/nginx/sites-enabled/default | select-string root | select-object -ExpandProperty Line"
-  - ssh user@IP "content = Get-Content /etc/nginx/sites-enabled/default"
-  - ssh user@IP "content | ForEach-Object {$_ -replace $line,"root = ~/WebProjectOLD"} | Set-Content /etc/nginx/sites-enabled/default"
+  - ssh user@IP "sudo sed -i 's/root =.*/root = ~\/WebProject/g' /etc/nginx/sites-enabled/default"
 ```
 
 Here is, where using different web servers changes the yaml file. If you're using a differet web-server you might want to adjust this step accordingly. Finally, you can access/refresh the page via your browser of choice and can spectate your automatically deployed changes.
@@ -126,9 +124,7 @@ You just need to conduct minor changes for an Apache Web Server in comparison to
 
 ```yaml
     ## Replace the definition of the target  site 
-  - ssh user@IP "line = Get-Content /etc/nginx/sites-enabled/default | select-string root | select-object -ExpandProperty Line"
-  - ssh user@IP "content = Get-Content /etc/nginx/sites-enabled/default"
-  - ssh user@IP "content | ForEach-Object {$_ -replace $line,"root = ~/WebProjectOLD"} | Set-Content /etc/nginx/sites-enabled/default"
+  - ssh user@IP "sudo sed -i 's/root =.*/root = ~\/WebProject/g' /etc/nginx/sites-enabled/default"
 ```
 
 with this piece of code
@@ -137,11 +133,12 @@ with this piece of code
     ## Replace the definition of the target  site 
   - ssh user@IP "cd /etc/httpd/conf/"
   - ssh user@IP "sed -i 's/DocumentRoot "/var/www/html"/DocumentRoot "~/moed/www"/g' httpd.conf"
-  ## Optional, if .html file is not named "index" 
-  - ssh user@IP "sed -i 's/DirectoryIndex index.html/DirectoryIndex INDEXNAME.html/g' httpd.conf"
+  
+  ## Optional, if .html file is not named "index" (Replace "INDEXNAME" with according name) 
+  #- ssh USER@HOSTNAMEORADRESS "sed -i 's/DirectoryIndex index.html/DirectoryIndex INDEXNAME.html/g' httpd.conf"
 ```
 
-An example Script is stored in the "apache" folder. 
+Depending how your .html main file is called, you might want to uncomment the last and replace the INDEXNAME placeholder with the according filename. An example Script is stored in the "apache" folder. 
 
 # Possible Sources of Errors 
 
