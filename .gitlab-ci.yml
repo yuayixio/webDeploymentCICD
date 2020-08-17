@@ -48,10 +48,11 @@ deploy:
 
   ## Replace the definition of the target  site 
   - ssh ubuntu@193.196.37.138 "sudo sed -i 's/root =.*/root = ~\/WebProject/g' /etc/nginx/sites-enabled/default"
+  
+  ## "Ugly" way of replacing Default file
   #- ssh ubuntu@193.196.37.138 "sudo cp -f /home/ubuntu/WebProject/default /etc/nginx/sites-enabled/default"
   ## Restart Nginx
   ## - ssh ubuntu@193.196.37.138 "sudo systemctl restart nginx"
-
   ## Check if restart was successful
   ##- ssh ubuntu@193.196.37.138 "sudo systemctl status nginx"
 

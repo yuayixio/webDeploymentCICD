@@ -15,9 +15,11 @@ deploy:
   ##  Run ssh-agent (inside the build environment)
   - eval "$(ssh-agent -s)"
   
-  ## Add the SSH password
+  ## Add the SSH key
   - echo "$DEPLOY_KEY" | ssh-add -
-  - apk add sshpass
+  
+  ## In case of necessary password (uncompleted)
+  #- apk add sshpass
   #- sshpass -p "$DEPLOY_PW" ssh -o StrictHostKeyChecking=no root@aifb-bis-petrianalyzer.aifb.kit.edu
  
  ## Create the SSH directory and give it the right permissions 
@@ -29,7 +31,7 @@ deploy:
   
   ## Check local files
   - ls
-  #- ssh -vvv root@aifb-bis-petrianalyzer.aifb.kit.edu
+
   ## Check remote access
   - ssh -tt root@129.13.152.42 "ls -l ~/moed"
 
@@ -51,7 +53,6 @@ deploy:
   ## Replace the definition of the target  site 
   - ssh root@aifb-bis-petrianalyzer.aifb.kit.edu "cd /etc/httpd/conf/"
   - ssh root@aifb-bis-petrianalyzer.aifb.kit.edu "sed -i 's/DocumentRoot "/var/www/html"/DocumentRoot "~/moed/www"/g' httpd.conf"
-  ## Optional, if .html file is not named "index" 
-  - ssh root@aifb-bis-petrianalyzer.aifb.kit.edu "sed -i 's/DirectoryIndex index.html/DirectoryIndex INDEXNAME.html/g' httpd.conf"
-  #- ssh root@aifb-bis-petrianalyzer.aifb.kit.edu "sudo cp -f /home/root/moed/moedclone/default /etc/nginx/sites-enabled/default"
 
+  ## Optional, if .html file is not named "index" (Replace "INDEXNAME" with according name) 
+  #- ssh root@aifb-bis-petrianalyzer.aifb.kit.edu "sed -i 's/DirectoryIndex index.html/DirectoryIndex INDEXNAME.html/g' httpd.conf"
