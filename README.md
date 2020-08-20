@@ -54,13 +54,13 @@ First, we need to do install **rsync**, which is a service later used to copy th
 
 ```yaml
  ## Install rsync
-  - apk update && apk add rsync
+  - apt-get update && apt-get add rsync
 
   ## Add ssh client
-  - 'which ssh-agent || ( apk update && apk add openssh-client)'
+  - 'which ssh-agent || ( apt-get update && apt-get add openssh-client)'
 ```
 
-Side note: we use an alpine distribution, which is the reason we use "apk" as our install manager. If you're using e.g. an ubuntu image, you need to replace "apk" with "apt-get".
+*Side note: you can also use an alpine distribution, in which case you'd need to replace the "apt-get" commands with "apk", the default alpine installation manager.*
 
 #### Connect to ssh
 
