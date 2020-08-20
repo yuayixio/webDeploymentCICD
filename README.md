@@ -11,7 +11,7 @@ This project provides a very simple web-application involving an index.html file
 
 # Deployment on Remote Nginx Web-Server 
 
-### Prerequisitions 
+### Requirements 
 
 Although, seemingly there is a lot to do before initialising GitLab CI, most of the steps only need to be done once and can be re-used for all other projects afterwards. Also, the reward from bringing some automation into your coding life definitely pays the bills on that part :v:
 
@@ -31,6 +31,8 @@ Although, seemingly there is a lot to do before initialising GitLab CI, most of 
 
 First of all, you need to create the gitlab-ci.yml script. For that, you need to add a new file in your GitLab root directory and select "gitlab-ci.yml" as template. As you (probably) now, the YAML file is ordered in stages and jobs, which run on those stages. For our very simple project, which doesn't need to be built anymore, we only define one stage. Also, we will use a Docker Container to run our CI file in. For that, we use a nginx docker image.
 
+#### Head & Structure
+
 ```yaml
 image: ubuntu:18.04
 
@@ -38,13 +40,15 @@ stages:
     - deploy
 ```
 
-We will just name the job running on that stage "deploy" too. Therefore, we need to declare on which stage it is running on as well as defining it's tasks below. The Runner then will go through the script from top to bottom and execute all steps sequentally, such as you'd use the terminal to manually insert your commands
+We will just name the job running on that stage "deploy" too. Therefore, we need to declare on which stage it is running on as well as defining it's tasks below. The Runner then will go through the script from top to bottom and execute all steps sequentally.
 
 ```yaml
 deploy: 
     stage: deploy
     script: 
 ```
+
+#### Install packages
 
 First, we need to do install **rsync**, which is a service later used to copy the files to the target server and **ssh agent**, our ssh connection service
 
@@ -57,6 +61,8 @@ First, we need to do install **rsync**, which is a service later used to copy th
 ```
 
 Side note: we use an alpine distribution, which is the reason we use "apk" as our install manager. If you're using e.g. an ubuntu image, you need to replace "apk" with "apt-get".
+
+#### Connect to ssh
 
 Next, we need to develop the SSH conenction to the remote server. for that, we will make use of our previously deployed SSH key. 
 
@@ -80,7 +86,11 @@ Next, we need to develop the SSH conenction to the remote server. for that, we w
   ## Check remote access
   - ssh user@IP "ls -l ~/WebProject"
 ```
- This can be pretty much copied for every remote server connection. The ssh-agent is first activated and the deployed key accessed over the pre-defined syntax "$KEYVARIABLENAME". Ultimately, the ssh connection is checked by accessing our pre-defined folder. Now, the actual data transfer happens. We are going to transfer the files from the GitLab repository to the remote server. To do so, we will make use of an temporary folder, which then is swapped with the old files. By first importing the file and then swapping folders locally, we reduce latency and prevent down-times.
+ This can be pretty much copied for every remote server connection. The ssh-agent is first activated and the deployed key accessed over the pre-defined syntax "$KEYVARIABLENAME". Ultimately, the ssh connection is checked by accessing our pre-defined folder. Now, the actual data transfer happens. We are going to transfer the files from the GitLab repository to the remote server. 
+
+#### Copying of repo to server 
+
+To do so, we will make use of an temporary folder, which then is swapped with the old files. By first importing the file and then swapping folders locally, we reduce latency and prevent down-times.
 
  ```yaml
     # Create temp folder structure if not existing
@@ -106,6 +116,8 @@ Again, this can be pretty much copy-pasted too. Just some variables need to be a
 - **./www/** in the rsync command -> Dependent on the folder/file structure of your project. Removing this parameter will make the command copy your whole repository over. Adjust it according to your needs.  
 
 This obviously applies for the before mentioned SSH conenction as well.
+
+#### Change target destination of root service 
 
 Next, the root location of the web server needs to be adjusted. If this was done before, the command will be skipped. Hereby, we ensure that the correct folder is adressed by the nginx server, either because it is the first initiation or because other projects were using the server in between. This is accomplished by using a simple regular expression supported substitution.
 
@@ -145,15 +157,29 @@ Depending how your .html main file is called, you might want to uncomment the la
 - Invalid YAML file
     -> Space sensitive!! Try to avoid unnecessary tabs/white spaces
 - Ports/Firewall not open
+    -> ssh, http, https...
 - Sudo rights of the user
+    -> Make use of local variable and *echo $PASSWORD_VARIABLE | sudo *someSudoCommands*
 - Not alpine distribution (apk not working)
-
+- Web server not allowed to access copied repository
+    -> chmod (but take care of sensitive data)
+Incorrect ssh configuration or key-pair
+    -> Save public key on *~/ssh/authorized_keys*
 
 # Runner for Research Group
 
-The GitLab Runner is the tool used to run your jobs and send the results back to GitLab. It basically the executing part of GitLab CI, responsible with following the task defined in the *gitlab-ci.yml* file. The detailed instructions of registering a runner can be found [How-To](https://docs.gitlab.com/runner/register/index.html) here.
+The GitLab Runner is the tool used to run your jobs and send the results back to GitLab. It is basically the executing part of GitLab CI, following the tasks defined in the *gitlab-ci.yml* file. The detailed instructions of registering a runner can be found [How-To](https://docs.gitlab.com/runner/register/index.html) here. the Gitlab Runner can have different forms, such as a docker container or a virtual command shell. Per default, GitLab provides pre-defined Shared Runner, running on their own server.
 
-However, in order to have a shared runner for the research group, 
+However, since we work on the *git.scc.kit.edu* subdomainin, we cannot make use of these runner. Therefore, in order to have a shared runner for the research group, we created an own "Shared" Runner for everyone to implement in their project.
+
+It is running on a CentOS Server from the research group, to be found under the domain *http://aifb-bis-petrianalyzer.aifb.kit.edu/*. In order to make it as generic as possible, this runner was defined as a docker container with an ubuntu 18.04 image. Activating it for your project is fairly easy and only requires the following steps:
+
+1.) Activate GitLab CI for your project (as described in the beginning of this Readme ([How-To](hhttps://docs.gitlab.com/ee/ci/enable_or_disable_ci.html#per-project-user-setting)))
+2.) Select Runner on CI settings 
+    *Settings -> CI/CD -> Runner -> Specific Runner -> Select Runner with Tags "Docker, Ubuntu, onCentOS" ([Link](https://git.scc.kit.edu/utehf/example-web-project/runners/1017)) and press "Activate for this project*
+3.) Automatically use the Runner on your next commit
+    *Please note that Runner "only" look out for new jobs every 3 seconds, so your pipeline might be stuck for a couple of seconds before executing*
+
 
 
 
