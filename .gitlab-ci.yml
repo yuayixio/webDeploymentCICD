@@ -31,7 +31,7 @@ deploy:
   ##  Check remote access
   - ssh ubuntu@193.196.37.138 "ls -l ~/WebProject"
 
-   # Create temp folder structure if not existing
+  ## Create temp folder structure if not existing
   - ssh ubuntu@193.196.37.138 "mkdir -p ~/WebProjectTEMP"
 
   ##  Copy files; just use "www" folder (in which the .html file is stored)

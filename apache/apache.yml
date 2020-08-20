@@ -1,4 +1,4 @@
-image: httpd:alpine
+image: ubuntu:18.04
 
 stages:
   - deploy
