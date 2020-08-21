@@ -115,7 +115,7 @@ Again, this can be pretty much copy-pasted too. Just some variables need to be a
 - **WebProject(OLD/TEMP)** -> Your project name/preferred folder structure
 - **./www/** in the rsync command -> Dependent on the folder/file structure of your project. Removing this parameter will make the command copy your whole repository over. Adjust it according to your needs.  
 
-This obviously applies for the before mentioned SSH conenction as well.
+This obviously applies to the before mentioned SSH conenction as well.
 
 #### Change target destination of root service 
 
@@ -126,7 +126,7 @@ Next, the root location of the web server needs to be adjusted. If this was done
   - ssh user@IP "sudo sed -i 's/root =.*/root = ~\/WebProject/g' /etc/nginx/sites-enabled/default"
 ```
 
-Here is, where using different web servers changes the yaml file. If you're using a differet web-server you might want to adjust this step accordingly. Finally, you can access/refresh the page via your browser of choice and can spectate your automatically deployed changes.
+This is just a simple text exchange based on regular expressions. If you've got any problems with "sudo", scroll to the "Possible Sources of Error". Here is, where using different web servers changes the yaml file. If you're using a differet web-server you might want to adjust this step accordingly, based on the server configuration. Finally, you can access/refresh the page via your browser of choice and can spectate your automatically deployed changes.
 
 The full file can be found in this project in the root directory.
 
@@ -159,7 +159,8 @@ Depending how your .html main file is called, you might want to uncomment the la
 - Ports/Firewall not open
     -> ssh, http, https...
 - Sudo rights of the user
-    -> Make use of local variable and *echo $PASSWORD_VARIABLE | sudo *someSudoCommands*
+    -> Make use of local variable (the sudo password) and add *echo $PASSWORD_VARIABLE | * in the same row in front of your *sudo someSudoCommands*
+    -> [Alternative Solution](https://stackoverflow.com/questions/19383887/how-to-use-sudo-in-build-script-for-gitlab-ci)
 - Not alpine distribution (apk not working)
 - Web server not allowed to access copied repository
     -> chmod (but take care of sensitive data)
@@ -168,7 +169,7 @@ Incorrect ssh configuration or key-pair
 
 # Runner for Research Group
 
-The GitLab Runner is the tool used to run your jobs and send the results back to GitLab. It is basically the executing part of GitLab CI, following the tasks defined in the *gitlab-ci.yml* file. The detailed instructions of registering a runner can be found [How-To](https://docs.gitlab.com/runner/register/index.html) here. the Gitlab Runner can have different forms, such as a docker container or a virtual command shell. Per default, GitLab provides pre-defined Shared Runner, running on their own server.
+The GitLab Runner is the tool used to run your jobs and send the results back to GitLab. It is basically the executing part of GitLab CI, following the tasks defined in the *gitlab-ci.yml* file. The detailed instructions of registering a runner can be found [How-To](https://docs.gitlab.com/runner/register/index.html) here. The Gitlab Runner can have different forms, such as a docker container or a virtual command shell. Per default, GitLab provides pre-defined Shared Runner. These are running on their own servers.
 
 However, since we work on the *git.scc.kit.edu* subdomainin, we cannot make use of these runner. Therefore, in order to have a shared runner for the research group, we created an own "Shared" Runner for everyone to implement in their project.
 
@@ -177,7 +178,7 @@ It is running on a CentOS Server from the research group, to be found under the 
 1.) Activate GitLab CI for your project (as described in the beginning of this Readme ([How-To](hhttps://docs.gitlab.com/ee/ci/enable_or_disable_ci.html#per-project-user-setting)))
 2.) Select Runner on CI settings 
     *Settings -> CI/CD -> Runner -> Specific Runner -> Select Runner with Tags "Docker, Ubuntu, onCentOS" ([Link](https://git.scc.kit.edu/utehf/example-web-project/runners/1017)) and press "Activate for this project*
-3.) Automatically use the Runner on your next commit
+3.) GitLab now uses the Runner automatically on your next commit (if you created a .gitlab-ci.yml file)
     *Please note that Runner "only" look out for new jobs every 3 seconds, so your pipeline might be stuck for a couple of seconds before executing*
 
 
