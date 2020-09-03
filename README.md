@@ -146,7 +146,7 @@ with this piece of code
 ```yaml
     ## Replace the definition of the target  site 
   - ssh user@IP "cd /etc/httpd/conf/"
-  - ssh user@IP "sed -i 's/DocumentRoot "/var/www/html"/DocumentRoot "~/moed/www"/g' httpd.conf"
+  - ssh user@IP "sed -i 's/DocumentRoot "/var/www/html"/DocumentRoot "~/Webproject"/g' httpd.conf"
   
   ## Optional, if .html file is not named "index" (Replace "INDEXNAME" with according name) 
   #- ssh USER@HOSTNAMEORADRESS "sed -i 's/DirectoryIndex index.html/DirectoryIndex INDEXNAME.html/g' httpd.conf"
