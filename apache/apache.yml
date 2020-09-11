@@ -33,26 +33,26 @@ deploy:
   - ls
 
   ## Check remote access
-  - ssh -tt USER@HOSTNAMEORADRESS "ls -l ~/moed"
+  - ssh -tt USER@HOSTNAMEORADRESS "ls -l ~/WebProject"
 
    # Create temp folder structure if not existing
-  - ssh USER@HOSTNAMEORADRESS "mkdir -p ~/moedcloneTemp"
+  - ssh USER@HOSTNAMEORADRESS "mkdir -p ~/WebProjectTEMP"
 
   ##  Copy files; just use "www" folder (in which the .html file is stored)
-  - rsync -a --delete --stats ./www/ USER@HOSTNAMEORADRESS:~/moedcloneTemp
+  - rsync -a --delete --stats ./www/ USER@HOSTNAMEORADRESS:~/WebProjectTEMP
 
   ## Check successful copy
-  - ssh USER@HOSTNAMEORADRESS "ls -l ~/moedcloneTemp"
+  - ssh USER@HOSTNAMEORADRESS "ls -l ~/WebProjectTEMP"
 
   ## Move existing directory in Outdated folder and new one in the main one
-  - ssh USER@HOSTNAMEORADRESS "mv ~/moedclone ~/moedcloneOld && mv ~/moedcloneTemp ~/moedclone" 
+  - ssh USER@HOSTNAMEORADRESS "mv ~/WebProject ~/WebProjectOLD && mv ~/WebProjectTEMP ~/WebProject" 
 
   ## Remove old directory
-  - ssh USER@HOSTNAMEORADRESS "sudo rm -rf ~/moedcloneOld"
+  - ssh USER@HOSTNAMEORADRESS "sudo rm -rf ~/WebProjectOLD"
 
   ## Replace the definition of the target  site 
   - ssh USER@HOSTNAMEORADRESS "cd /etc/httpd/conf/"
-  - ssh USER@HOSTNAMEORADRESS "sed -i 's/DocumentRoot "/var/www/html"/DocumentRoot "~/moed/www"/g' httpd.conf"
+  - ssh USER@HOSTNAMEORADRESS "sed -i 's/DocumentRoot "/var/www/html"/DocumentRoot "~/WebProject/www"/g' httpd.conf"
 
   ## Optional, if .html file is not named "index" (Replace "INDEXNAME" with according name) 
   #- ssh USER@HOSTNAMEORADRESS "sed -i 's/DirectoryIndex index.html/DirectoryIndex INDEXNAME.html/g' httpd.conf"
