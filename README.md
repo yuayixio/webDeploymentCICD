@@ -1,6 +1,5 @@
 # Guide on integrating GitLab CI into the development of Web Projects 
 
-[[_TOC_]]
 
 ## Introduction
 
@@ -169,17 +168,17 @@ Depending how your .html main file is called, you might want to uncomment the la
 Incorrect ssh configuration or key-pair
     -> Save public key on *~/ssh/authorized_keys*
 
-## Runner for Research Group
+## GitLab Runner
 
 The GitLab Runner is the tool used to run your jobs and send the results back to GitLab. It is basically the executing part of GitLab CI, following the tasks defined in the *gitlab-ci.yml* file. The detailed instructions of registering a runner can be found [How-To](https://docs.gitlab.com/runner/register/index.html) here. The Gitlab Runner can have different forms, such as a docker container or a virtual command shell. Per default, gitlab.com provides pre-defined Shared Runner. These are running on their own servers.
 
-However, since we work on the *git.scc.kit.edu* gitlab instance, we cannot make use of these runners. Therefore, in order to have a shared runner for the research group, we created an own "Shared" Runner for everyone to implement in their project.
+However, since we work on an gitlab sub instance, we cannot make use of these runners. Therefore, in order to have a shared runner, we created an own "Shared" Runner for everyone to implement in their project.
 
-It is running on a CentOS Server from the research group, to be found under the domain *http://aifb-bis-petrianalyzer.aifb.kit.edu/*. In order to make it as generic as possible, this runner was defined as a docker container with an ubuntu 18.04 image. Activating it for your project is fairly easy and only requires the following steps:
+It is running on a CentOS Server from the research group, to be found under the domain *xxx*. In order to make it as generic as possible, this runner was defined as a docker container with an ubuntu 18.04 image. Activating it for your project is fairly easy and only requires the following steps:
 
 1.) Activate GitLab CI for your project (as described in the beginning of this Readme ([How-To](https://docs.gitlab.com/ee/ci/enable_or_disable_ci.html#per-project-user-setting)))
 2.) Select Runner on CI settings 
-    *Settings -> CI/CD -> Runner -> Specific Runner -> Select Runner with Tags "Docker, Ubuntu, onCentOS" ([Link](https://git.scc.kit.edu/utehf/example-web-project/runners/1017)) and press "Activate for this project*
+    *Settings -> CI/CD -> Runner -> Specific Runner -> Select Runner with Tags "Docker, Ubuntu, onCentOS" ([Link](https://git.scc.kit.edu/utehf/example-web-project/runners/xxxx)) and press "Activate for this project*
 3.) GitLab now uses the Runner automatically on your next commit (if you created a .gitlab-ci.yml file)
     *Please note that Runner "only" look out for new jobs every 3 seconds, so your pipeline might be stuck for a couple of seconds before executing*
 
